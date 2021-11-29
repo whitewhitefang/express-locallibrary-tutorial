@@ -1,0 +1,42 @@
+extends layout
+
+block content
+    h1=title
+
+    form(method='POST' action='')
+        div.form-group
+            label(for='book') Book:
+            select#book.form-control(name='book')
+                - book_list.sort(function(a, b) {let textA = a.title.toUpperCase(); let textB = b.title.toUpperCase(); return (textA < textB) ? -1 : 0;});
+                for book in book_list
+                    if bookinstance
+                        option(value=book._id selected=(selected_book ==book._id.toString() ? 'selected' : false)) #{book.title}
+                    else
+                        option(value=book._id) #{book.title}
+
+        div.form-group
+            label(for='imprint') Imprint:
+                input#imprint.form-control(type="text" placeholder='Publisher and date information' name='imprint'
+                    value=(undefined===bookinstance ? '' : bookinstance.imprint))
+        div.form-group
+            label(for='status') Status:
+            select#status.form-control(name='status')
+                option(value='Maintenance' selected=(undefined===bookinstance || bookinstance.status!=='Maintenance'
+                    ? false : 'selected')) Maintenance
+                option(value='Available' selected=(undefined === bookinstance || bookinstance.status!=='Available'
+                    ? false : 'selected')) Available
+                option(value='Loaned' selected=(undefined === bookinstance || bookinstance.status!== 'Loaned'
+                    ? false : 'selected')) Loaned
+                option(value='Reserved' selected=(undefined === bookinstance || bookinstance.status!=='Reserved'
+                    ? false : 'selected')) Reserved
+        div.form-group
+            p #{bookinstance==null ? null : "Due back: " + bookinstance.due_back_formatted}
+            label(for='dueback') #{bookinstance==null ? "Due back:" : "Pick new date"}
+            input#dueback.form-control(type='date' name='due_back' value=(undefined===bookinstance ? '' :
+                bookinstance.due_back) placeholder=(undefined===bookinstance ? '' : bookinstance.due_back))
+
+        button.btn.btn-primary(type="submit") Submit
+    if errors
+        ul
+            for error in errors
+                li!=error.msg
