@@ -15,7 +15,8 @@ const helmet = require('helmet');
 
 // mongoose and DB connection
 const mongoose = require('mongoose');
-const mongoDB = "mongodb+srv://beloze:Ezzollebb84848484@cluster0.w3dn3.mongodb.net/library?retryWrites=true&w=majority";
+const dev_db_url = "mongodb+srv://beloze:Ezzollebb84848484@cluster0.w3dn3.mongodb.net/library?retryWrites=true&w=majority";
+const mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -44,7 +45,7 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

@@ -38,7 +38,7 @@ exports.author_detail = function (req, res, next) {
         });
 };
 // display Author create form on GET
-exports.author_create_get = function (req, res, next) {
+exports.author_create_get = function (req, res) {
     res.render('author_form', {title: 'Create author'});
 };
 // Handle Author create on POST
@@ -51,20 +51,19 @@ exports.author_create_post = [
     (req, res, next) => {
         // Extract validation errors from the request
         const errors = validationResult(req);
+        // Create an author object with escaped and trimmed data
+        const author = new Author(
+            {
+                first_name: req.body.first_name,
+                family_name: req.body.family_name,
+                date_of_birth: req.body.date_of_birth,
+                date_of_death: req.body.date_of_death
+            }
+        );
         if (!errors.isEmpty()) {
             // There are errors/ Re-render the form
-            res.render('author_form', {title: 'Create author', author: req.body, errors: errors.array()});
+            res.render('author_form', {title: 'Create author', author: author, errors: errors.array()});
         } else {
-            // Data form is valid
-            // Create an author object with escaped and trimmed data
-            const author = new Author(
-                {
-                    first_name: req.body.first_name,
-                    family_name: req.body.family_name,
-                    date_of_birth: req.body.date_of_birth,
-                    date_of_death: req.body.date_of_death
-                }
-            );
             author.save(function (err) {
                 if (err) {
                     return next(err);

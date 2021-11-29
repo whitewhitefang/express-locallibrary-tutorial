@@ -30,8 +30,8 @@ block content
                 option(value='Reserved' selected=(undefined === bookinstance || bookinstance.status!=='Reserved'
                     ? false : 'selected')) Reserved
         div.form-group
-            p #{bookinstance==null ? null : "Due back: " + bookinstance.due_back_formatted}
-            label(for='dueback') #{bookinstance==null ? "Due back:" : "Pick new date"}
+            p #{bookinstance==null || bookinstance.status==='Available' ? null : "Due back: " + bookinstance.due_back_formatted}
+            label(for='dueback') #{bookinstance==null || bookinstance.status==='Available' ? "Due back:" : "Pick new date"}
             input#dueback.form-control(type='date' name='due_back' value=(undefined===bookinstance ? '' :
                 bookinstance.due_back) placeholder=(undefined===bookinstance ? '' : bookinstance.due_back))
 
